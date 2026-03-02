@@ -23,12 +23,19 @@ import {
   Performance,
 } from "scenes";
 
+// 🚨 NAYE IMPORTS
+import LoginPage from "./scenes/loginPage"; 
+import LandingPage from "./scenes/landingPage";
+
 // App
 const App = () => {
-  // Dark/Light mode
+  // 1. Theme State
   const mode = useSelector((state) => state.global.mode);
-  // theme setting
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+
+  // 2. Auth State (Checking if user is logged in)
+  const user = useSelector((state) => state.global.user);
+  const isAuth = Boolean(user);
 
   return (
     <div className="app">
@@ -36,10 +43,14 @@ const App = () => {
         {/* Theme Provider */}
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          
           <Routes>
-            {/* Routes */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* 🌟 PUBLIC ROUTES (Bina login ke khulenge) */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={!isAuth ? <LoginPage /> : <Navigate to="/dashboard" replace />} />
+
+            {/* 🔒 PROTECTED ROUTES (Sirf tab khulenge jab isAuth true hoga) */}
+            <Route element={isAuth ? <Layout /> : <Navigate to="/login" replace />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
               <Route path="/customers" element={<Customers />} />
@@ -52,6 +63,7 @@ const App = () => {
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} />
             </Route>
+            
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

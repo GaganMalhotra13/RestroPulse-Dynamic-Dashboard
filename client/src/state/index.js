@@ -1,12 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// initial redux state
 const initialState = {
   mode: "dark",
-  userId: "73701cc1f03239b7f7000008",
+  user: null, // 👈 Ye batayega ki user logged in hai ya nahi
 };
 
-// reducers to get redux state data
 export const globalSlice = createSlice({
   name: "global",
   initialState,
@@ -14,9 +12,15 @@ export const globalSlice = createSlice({
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
+    // 👈 Naye Auth Reducers
+    setLogin: (state, action) => {
+      state.user = action.payload.user;
+    },
+    setLogout: (state) => {
+      state.user = null;
+    },
   },
 });
 
-export const { setMode } = globalSlice.actions;
-
+export const { setMode, setLogin, setLogout } = globalSlice.actions;
 export default globalSlice.reducer;

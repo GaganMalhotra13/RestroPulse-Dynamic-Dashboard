@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setMode } from "state";
+import { useNavigate } from "react-router-dom";
+import { setLogout } from "state"; // Path check kar lena, shayad "../../state" ho
 import {
   AppBar,
   useTheme,
@@ -29,14 +31,32 @@ import profileImage from "assets/profile.png";
 // Navbar
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   // redux dispatch items
-  const dispatch = useDispatch();
   // theme
   const theme = useTheme();
 
   // nav state
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      // 1. Backend API call to clear the HTTP-Only Cookie
+      await fetch("http://localhost:5001/auth/logout", {
+        method: "POST",
+        credentials: "include" // 🚨 SUPER IMPORTANT: Iske bina cookie delete nahi hogi!
+      });
+
+      // 2. Redux state se user ko hatao
+      dispatch(setLogout());
+
+      // 3. User ko wapas Login screen par bhejo
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   // handle
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);

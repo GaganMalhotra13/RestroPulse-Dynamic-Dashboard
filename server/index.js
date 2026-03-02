@@ -5,17 +5,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-
+import cookieParser from "cookie-parser";
+import analyticsRoutes from "./routes/analytics.js";
 // Rate Limiter
-import { rateLimiter } from "./middlewares/rateLimiter.js";
+// import { rateLimiter } from "./middlewares/rateLimiter.js";
 
 // Routes imports
+import authRoutes from "./routes/auth.js"; // 👈 AUTH ROUTE IMPORT KIYA
 import clientRoutes from "./routes/client.js";
 import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 
-// Data imports - INHE MAINE UNCOMMENT KAR DIYA HAI
+// Data imports
 import User from "./models/User.js";
 import Product from "./models/Product.js";
 import ProductStat from "./models/ProductStat.js";
@@ -33,17 +35,26 @@ import {
 
 // Configuration
 dotenv.config();
-const app = express();
+const app = express(); // 👈 SIRF EK BAAR DEFINE KARNA HAI
+
+// Middlewares
 app.use(express.json());
-// app.use(rateLimiter); // Agar error aaye toh isse comment rehne dena
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
+app.use("/analytics", analyticsRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cookieParser()); // 👈 COOKIE PARSER ADD KIYA
+
+// 🚨 CORS FIX: Ek hi CORS rakha hai, with credentials!
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true, 
+}));
 
 // Routes Setup
+app.use("/auth", authRoutes); // 👈 AUTH ROUTE REGISTER KIYA
 app.use("/client", clientRoutes);
 app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
@@ -62,8 +73,6 @@ mongoose.connect("mongodb://localhost:27017/restropulse")
       .then(() => console.log("✅ 13 Products Seeded Successfully!"))
       .catch((err) => console.log("❌ Seed Error:", err.message));
 
-  
-
     /* ONLY RUN THIS ONCE TO FILL DATABASE */
     // User.insertMany(dataUser);
     // Product.insertMany(dataProduct);
@@ -71,7 +80,28 @@ mongoose.connect("mongodb://localhost:27017/restropulse")
     // Transaction.insertMany(dataTransaction);
     // OverallStat.insertMany(dataOverallStat);
     // AffiliateStat.insertMany(dataAffiliateStat);
-
+/* 🚨 QUICK SEED SCRIPT FOR REAL AGGREGATION TESTING */
+    /* Ise ek baar run karke comment kar dena warna har baar data add hoga */
+    // const generateTransactions = async () => {
+    //   console.log("Seeding real-like transactions...");
+    //   const transactions = [];
+    //   for (let i = 0; i < 100; i++) {
+    //     // Random date in last 30 days
+    //     const randomDate = new Date();
+    //     randomDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 30));
+        
+    //     transactions.push({
+    //       amount: Math.floor(Math.random() * 5000) + 500, // 500 se 5500 ka bill
+    //       paymentType: ["cash", "card", "upi"][Math.floor(Math.random() * 3)],
+    //       status: "completed",
+    //       createdAt: randomDate,
+    //       updatedAt: randomDate
+    //     });
+    //   }
+    //   await Transaction.insertMany(transactions);
+    //   console.log("✅ 100 Aggregation-ready Transactions inserted!");
+    // };
+    // generateTransactions();
     console.log("🚀 RestroPulse DB Connected!");
   })
   .catch((error) => console.log(`${error} did not connect`));

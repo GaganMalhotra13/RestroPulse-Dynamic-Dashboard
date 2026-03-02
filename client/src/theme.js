@@ -5,11 +5,11 @@ export const tokensDark = {
     10: "#f6f6f6", // manually adjusted
     50: "#f0f0f0", // manually adjusted
     100: "#e0e0e0",
-    200: "#c2c2c2",
-    300: "#a3a3a3",
-    400: "#858585",
-    500: "#666666",
-    600: "#525252",
+    200: "#fd9191",
+    300: "#fd9191",
+    400: "#fd9191",
+    500: "#fd9191",
+    600: "#fd9191",
     700: "#3d3d3d",
     800: "#292929",
     900: "#141414",
@@ -19,7 +19,7 @@ export const tokensDark = {
       100: "#ffe6e6", // Lightest (background highlights)
       200: "#ffbaba", 
       300: "#f88989", // Tera soft coral shade
-      400: "#996a6a", 
+      400: "#da2d2d", 
       600: "#8987e4", // Tera main brand color!
       500: "#355a86", // Hover states ke liye
       700: "#b34040", 
