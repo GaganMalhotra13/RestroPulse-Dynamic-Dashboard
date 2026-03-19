@@ -7,70 +7,132 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import analyticsRoutes from "./routes/analytics.js";
-// Rate Limiter
-// import { rateLimiter } from "./middlewares/rateLimiter.js";
 
 // Routes imports
-import authRoutes from "./routes/auth.js"; // 👈 AUTH ROUTE IMPORT KIYA
+import authRoutes from "./routes/auth.js"; 
 import clientRoutes from "./routes/client.js";
 import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 
-// Data imports
-import User from "./models/User.js";
-import Product from "./models/Product.js";
-import ProductStat from "./models/ProductStat.js";
-import Transaction from "./models/Transaction.js";
-import OverallStat from "./models/OverallStat.js";
-import AffiliateStat from "./models/AffiliateStat.js";
-import {
-  dataUser,
-  dataProduct,
-  dataProductStat,
-  dataTransaction,
-  dataOverallStat,
-  dataAffiliateStat,
-} from "./data/index.js";
-
 // Configuration
 dotenv.config();
-const app = express(); // 👈 SIRF EK BAAR DEFINE KARNA HAI
+const app = express();
+
+// ✅ PORT DEFINITION (Yahi missing tha!)
+const PORT = process.env.PORT || 5001;
 
 // Middlewares
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-app.use("/analytics", analyticsRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser()); // 👈 COOKIE PARSER ADD KIYA
+app.use(cookieParser());
 
-// 🚨 CORS FIX: Ek hi CORS rakha hai, with credentials!
+// CORS FIX: Render deploy ke liye origin baad mein badal sakte ho
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://restropulse-dashboard.onrender.com"], // Frontend URL yahan aayegi
   credentials: true, 
 }));
 
 // Routes Setup
-app.use("/auth", authRoutes); // 👈 AUTH ROUTE REGISTER KIYA
+app.use("/auth", authRoutes); 
 app.use("/client", clientRoutes);
 app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
+app.use("/analytics", analyticsRoutes);
 
 // Mongoose Setup
 const MONGO_URL = process.env.MONGO_URL;
+
 if (!MONGO_URL) {
     console.error("ERROR: MONGO_URL is missing in Environment Variables!");
 }
 
 mongoose.connect(MONGO_URL)
     .then(() => {
-        app.listen(PORT, () => console.log(`Server running on Port: ${PORT}`));
+        // ✅ IMPORTANT: "0.0.0.0" added for Render connectivity
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`✅ Server running on Port: ${PORT}`);
+        });
     })
     .catch((error) => console.log(`${error} did not connect`));
+    // import express from "express";
+// import bodyParser from "body-parser";
+// import mongoose from "mongoose";
+// import cors from "cors";
+// import dotenv from "dotenv";
+// import helmet from "helmet";
+// import morgan from "morgan";
+// import cookieParser from "cookie-parser";
+// import analyticsRoutes from "./routes/analytics.js";
+// // Rate Limiter
+// // import { rateLimiter } from "./middlewares/rateLimiter.js";
+
+// // Routes imports
+// import authRoutes from "./routes/auth.js"; // 👈 AUTH ROUTE IMPORT KIYA
+// import clientRoutes from "./routes/client.js";
+// import generalRoutes from "./routes/general.js";
+// import managementRoutes from "./routes/management.js";
+// import salesRoutes from "./routes/sales.js";
+
+// // Data imports
+// import User from "./models/User.js";
+// import Product from "./models/Product.js";
+// import ProductStat from "./models/ProductStat.js";
+// import Transaction from "./models/Transaction.js";
+// import OverallStat from "./models/OverallStat.js";
+// import AffiliateStat from "./models/AffiliateStat.js";
+// import {
+//   dataUser,
+//   dataProduct,
+//   dataProductStat,
+//   dataTransaction,
+//   dataOverallStat,
+//   dataAffiliateStat,
+// } from "./data/index.js";
+
+// // Configuration
+// dotenv.config();
+// const app = express(); // 👈 SIRF EK BAAR DEFINE KARNA HAI
+
+// // Middlewares
+// app.use(express.json());
+// app.use(helmet());
+// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+// app.use(morgan("common"));
+// app.use("/analytics", analyticsRoutes);
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(cookieParser()); // 👈 COOKIE PARSER ADD KIYA
+
+// // 🚨 CORS FIX: Ek hi CORS rakha hai, with credentials!
+// app.use(cors({
+//   origin: "http://localhost:3000",
+//   credentials: true, 
+// }));
+
+// // Routes Setup
+// app.use("/auth", authRoutes); // 👈 AUTH ROUTE REGISTER KIYA
+// app.use("/client", clientRoutes);
+// app.use("/general", generalRoutes);
+// app.use("/management", managementRoutes);
+// app.use("/sales", salesRoutes);
+
+// // Mongoose Setup
+// const MONGO_URL = process.env.MONGO_URL;
+// if (!MONGO_URL) {
+//     console.error("ERROR: MONGO_URL is missing in Environment Variables!");
+// }
+
+// mongoose.connect(MONGO_URL)
+//     .then(() => {
+//         app.listen(PORT, () => console.log(`Server running on Port: ${PORT}`));
+//     })
+//     .catch((error) => console.log(`${error} did not connect`));
 // mongoose.connect("MONGO_URL")
 //   .then(() => {
 //     app.listen(PORT, () => console.log(`🚀 Server Port: ${PORT}`));
