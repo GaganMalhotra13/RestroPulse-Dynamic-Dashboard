@@ -61,9 +61,8 @@ app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 
 // Mongoose Setup
-const PORT = process.env.PORT || 5001;
-
-mongoose.connect("mongodb://localhost:27017/restropulse")
+const MONGO_URL = process.env.MONGO_URL;
+mongoose.connect("MONGO_URL")
   .then(() => {
     app.listen(PORT, () => console.log(`🚀 Server Port: ${PORT}`));
 
