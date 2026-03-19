@@ -1,20 +1,30 @@
 import mongoose from "mongoose";
 
-const TransactionSchema = new mongoose.Schema({
-  customerId:  { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  // Product list with quantity for proper billing
-  products:    [
-    { 
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-      quantity: { type: Number, default: 1 },
-      priceAtPurchase: { type: Number } // Important: price can change later, bill shouldn't
-    }
-  ],
-  amount:      { type: Number, required: true },
-  paymentType: { type: String, enum: ["cash", "card", "upi", "online"], default: "cash" },
-  tableNumber: { type: Number },
-  status:      { type: String, enum: ["pending","completed","cancelled"], default: "pending" },
-  branchId:    { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
-}, { timestamps: true });
+const TransactionSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    cost: { // 🚨 Puraane 'amount' ko replace karke 'cost' kiya
+      type: String, 
+      required: true,
+    },
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId, // 🚨 Ab ye accurately Item IDs ko handle karega
+        ref: "Product",
+      }
+    ],
+    paymentType: {
+      type: String,
+      default: "cash"
+    },orderType: { type: String, default: "Dine-In" },
+    staffName: { type: String },
+    staffRole: { type: String }
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Transaction", TransactionSchema);
+const Transaction = mongoose.model("Transaction", TransactionSchema);
+export default Transaction;

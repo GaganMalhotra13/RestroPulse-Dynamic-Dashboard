@@ -11,14 +11,16 @@ import {
   Box,
   Button,
   Typography,
-  useTheme,
+  useTheme,TextField, // 👈 Ye add kiya
+  Select,    // 👈 Ye add kiya
+  MenuItem,
   useMediaQuery,
   Alert,
-  IconButton,
+  IconButton,Dialog, DialogTitle, DialogContent, DialogActions
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
-import { useGetDashboardQuery } from "state/api";
+import { useGetDashboardQuery,useAddTransactionMutation, useGetProductsQuery } from "state/api";
 import {
   FlexBetween,
   Header,
@@ -50,12 +52,52 @@ const Dashboard = () => {
     setShowBanner(false);
     localStorage.setItem("bannerDismissed", "true");
   };
+  
+const [addTransaction, { isLoading: isPunching }] = useAddTransactionMutation();  const [orderAmount, setOrderAmount] = useState("");
+  const [paymentType, setPaymentType] = useState("cash");
+  const { data: menuItems, isLoading: isMenuLoading } = useGetProductsQuery();
+  
+  const [cart, setCart] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+const [customerName, setCustomerName] = useState("");
+const [orderType, setOrderType] = useState("Dine-In"); 
+  const [staffName, setStaffName] = useState("");
+  const [staffRole, setStaffRole] = useState("Serving Staff");
+  const totalAmount = cart.reduce((total, item) => total + item.price, 0);
 
+  const addToCart = (item) => setCart([...cart, item]);
+  const clearCart = () => setCart([]);
+ const handlePunchOrder = async () => {
+    if (cart.length === 0) return alert("Please select items!");
+    if (!customerName || !staffName) return alert("Please Enter Customer & Staff Name!");
+    
+    try {
+      await addTransaction({
+        products: cart.map(item => item._id), 
+        cost: Number(totalAmount),
+        paymentType: paymentType,
+        customerName: customerName,
+        // 🟢 NAYE FIELDS BHEJ RAHE HAIN
+        orderType: orderType,
+        staffName: staffName,
+        staffRole: staffRole,
+        cartItems: cart // 👈 Pie chart calculation ke liye poora cart bhej rahe hain
+      }).unwrap();
+      
+      clearCart(); 
+      setCustomerName("");
+      setStaffName("");
+      setIsModalOpen(false); 
+      alert("✅ Order Placed Successfully!");
+    } catch (error) {
+      console.error("Failed to add order", error);
+    }
+  };
   // data columns
   const columns = [
     {
       field: "_id",
-      headerName: "ID",
+      headerName: "ORDER ID",
       flex: 1,
     },
     {
@@ -63,18 +105,17 @@ const Dashboard = () => {
       headerName: "User ID",
       flex: 0.5,
     },
-    {
-      field: "createdAt",
-      headerName: "Created At",
+    {field: "createdAt",
+      headerName: "Time",
       flex: 1,
+      renderCell: (params) => new Date(params.value).toLocaleString(),
     },
     {
-      field: "products",
-      headerName: "# of Products",
+      ffield: "products",
+      headerName: "Items",
       flex: 0.5,
       sortable: false,
-      renderCell: (params) => params.value.length,
-    },
+      renderCell: (params) => params.value?.length || 0,    },
     {
       field: "cost",
       headerName: "Cost",
@@ -107,32 +148,24 @@ const Dashboard = () => {
       )}
 
       <FlexBetween>
-        {/* Header */}
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        {/* Content */}
-        <Box>
-          {/* Download Reports */}
-          <Button
-            sx={{
-              backgroundColor: theme.palette.secondary.light,
-              color: theme.palette.background.alt,
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-
-              "&:hover": {
-                backgroundColor: theme.palette.background.alt,
-                color: theme.palette.secondary.light,
-              },
-            }}
+        <Box display="flex" gap="1rem">
+          {/* 🟢 NAYA BUTTON JO MODAL KHOLEGA */}
+          <Button 
+            variant="contained" 
+            onClick={() => setIsModalOpen(true)}
+            sx={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.background.alt, fontWeight: "bold" }}
           >
-            <DownloadOutlined sx={{ mr: "10px" }} />
-            Download Reports
+            + PLACE NEW ORDER
+          </Button>
+          
+          {/* Tera purana download button */}
+          <Button sx={{ backgroundColor: theme.palette.secondary.light, color: theme.palette.background.alt }}>
+             Download Reports
           </Button>
         </Box>
       </FlexBetween>
-
+             
       <Box
         mt="20px"
         display="grid"
@@ -171,7 +204,7 @@ const Dashboard = () => {
             />
           }
         />
-
+       
         {/* Overview Chart */}
         <Box
           gridColumn="span 8"
@@ -186,8 +219,7 @@ const Dashboard = () => {
         {/* Monthly Gross Profit */}
         <StatBox
           title="Monthly Gross Profit"
-          value={data && data.thisMonthStats?.totalSales || 0}        
-          increase="+5%"
+          value={data?.thisMonthStats?.totalSales || 0}          increase="+5%"
           description="Since last month"
           icon={
             <PersonAdd
@@ -241,10 +273,19 @@ const Dashboard = () => {
           }}
         >
           <DataGrid
-            loading={isLoading || !data}
+            loading={isLoading}
             getRowId={(row) => row._id}
-            rows={(data && data.transactions) || []}
+            rows={data?.transactions || []}
             columns={columns}
+          components={{
+              NoRowsOverlay: () => (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                  <Typography variant="h5" color={theme.palette.secondary[200]}>
+                    No Orders Yet. Please Punch an Order! 🚀
+                  </Typography>
+                </Box>
+              )
+            }}
           />
         </Box>
 
@@ -272,7 +313,72 @@ const Dashboard = () => {
             made for this year and total sales
           </Typography>
         </Box>
-      </Box>
+      </Box><Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ backgroundColor: theme.palette.background.alt, color: theme.palette.secondary.main, fontWeight: "bold" }}>
+          Terminal POS: New Order
+        </DialogTitle>
+        <DialogContent sx={{ backgroundColor: theme.palette.background.alt }}>
+          
+          {/* Menu Items */}
+          <Box display="flex" gap="0.5rem" flexWrap="wrap" mt="1rem">
+            {isMenuLoading ? <Typography>Loading Menu...</Typography> : (
+               menuItems && menuItems.map((item) => (
+                <Button key={item._id} variant="outlined" onClick={() => addToCart(item)}
+                  sx={{ borderColor: theme.palette.primary.main, color: theme.palette.neutral.main }}>
+                  + {item.name} (₹{item.price})
+                </Button>
+              ))
+            )}
+          </Box>
+
+          {/* Billing Controls */}
+          {/* Billing & Staff Controls */}
+          <Box display="flex" flexDirection="column" gap="1.5rem" mt="2rem">
+            {/* Row 1: Customer & Order Details */}
+            <Box display="flex" gap="1rem" flexWrap="wrap">
+              <TextField label="Customer Name" size="small" value={customerName} onChange={(e) => setCustomerName(e.target.value)} sx={{ flex: 1 }} />
+              <Select size="small" value={orderType} onChange={(e) => setOrderType(e.target.value)}>
+                <MenuItem value="Dine-In">Dine-In</MenuItem>
+                <MenuItem value="Takeaway">Takeaway</MenuItem>
+                <MenuItem value="Delivery">Delivery</MenuItem>
+              </Select>
+              <Select size="small" value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
+                <MenuItem value="cash">Cash</MenuItem>
+                <MenuItem value="upi">UPI</MenuItem>
+                <MenuItem value="card">Card</MenuItem>
+              </Select>
+            </Box>
+
+            {/* Row 2: Staff Details */}
+            <Box display="flex" gap="1rem" flexWrap="wrap">
+              <TextField label="Staff Name" size="small" value={staffName} onChange={(e) => setStaffName(e.target.value)} sx={{ flex: 1 }} />
+              <Select size="small" value={staffRole} onChange={(e) => setStaffRole(e.target.value)} sx={{ flex: 1 }}>
+                <MenuItem value="Admin">Admin</MenuItem>
+                <MenuItem value="Staff Member">Staff Member</MenuItem>
+                <MenuItem value="Serving Staff">Serving Staff</MenuItem>
+              </Select>
+            </Box>
+
+            {/* Total Display */}
+            <Box display="flex" justifyContent="flex-end" mt="1rem">
+              <Typography variant="h3" fontWeight="bold" color={theme.palette.primary.main}>
+                Total: ₹{totalAmount}
+              </Typography>
+            </Box>
+          </Box>
+          <Typography variant="caption" color={theme.palette.neutral[400]} mt="1rem" display="block">
+            Cart ({cart.length} items): {cart.length > 0 ? cart.map(i => i.name).join(", ") : "Empty"}
+          </Typography>
+
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: theme.palette.background.alt, p: "1.5rem" }}>
+          <Button onClick={() => setIsModalOpen(false)} sx={{ color: theme.palette.neutral.main }}>Cancel</Button>
+          <Button variant="contained" onClick={handlePunchOrder} disabled={isPunching || cart.length === 0}
+            sx={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.background.alt, fontWeight: "bold" }}>
+            {isPunching ? "Processing..." : "GENERATE BILL"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

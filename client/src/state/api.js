@@ -17,9 +17,10 @@ export const api = createApi({
     "Geography",
     "Sales",
     "Admins",
-    "Performance",
+    "Performance","Analytics",
     "Dashboard",
   ],
+  
   // endpoints
   endpoints: (build) => ({
     getUser: build.query({
@@ -61,6 +62,21 @@ export const api = createApi({
     getDashboard: build.query({
       query: () => "general/dashboard",
       providesTags: ["Dashboard"],
+    }),getDailyRevenue: build.query({
+      query: () => "analytics/daily-revenue",
+      providesTags: ["Analytics"],
+    }),
+    getPeakHours: build.query({
+      query: () => "analytics/peak-hours",
+      providesTags: ["Analytics"],
+    }),
+    addTransaction: build.mutation({
+      query: (newOrderData) => ({
+        url: "sales/new-order",
+        method: "POST",
+        body: newOrderData,
+      }),
+      invalidatesTags: ["Dashboard", "Transactions", "Sales"], 
     }),
   }),
 });
@@ -75,5 +91,6 @@ export const {
   useGetSalesQuery,
   useGetAdminsQuery,
   useGetUserPerformanceQuery,
-  useGetDashboardQuery,
+  useGetDashboardQuery,useGetDailyRevenueQuery, 
+  useGetPeakHoursQuery,useAddTransactionMutation,
 } = api;

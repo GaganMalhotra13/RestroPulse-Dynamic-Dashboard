@@ -28,7 +28,6 @@ import {
 import { FlexBetween } from ".";
 import profileImage from "assets/profile.png";
 
-// Navbar
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   // redux dispatch items
   // theme
@@ -101,7 +100,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton
             onClick={() =>
               window.open(
-                "http://www.github.com/sanidhyy/mern-admin/",
+                "https://github.com/GaganMalhotra13/RestroPulse-Dynamic-Dashboard",
                 "_blank"
               )
             }
@@ -177,9 +176,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
               {/* log out */}
-              <MenuItem onClick={handleClose} title="Log Out">
-                Log Out
-              </MenuItem>
+             <MenuItem onClick={handleLogout}>Log Out</MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

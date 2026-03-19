@@ -1,47 +1,48 @@
-// color design tokens export
+// Color Design Tokens - Modern SaaS Theme (Slate, Indigo, Teal)
 export const tokensDark = {
   grey: {
-    0: "#ffffff", // manually adjusted
-    10: "#f6f6f6", // manually adjusted
-    50: "#f0f0f0", // manually adjusted
-    100: "#e0e0e0",
-    200: "#fd9191",
-    300: "#fd9191",
-    400: "#fd9191",
-    500: "#fd9191",
-    600: "#fd9191",
-    700: "#3d3d3d",
-    800: "#292929",
-    900: "#141414",
-    1000: "#000000", // manually adjusted
+    0: "#ffffff",
+    10: "#f8fafc", 
+    50: "#f1f5f9", 
+    100: "#e2e8f0",
+    200: "#cbd5e1",
+    300: "#94a3b8",
+    400: "#64748b",
+    500: "#475569", // True mid-grey
+    600: "#334155",
+    700: "#1e293b",
+    800: "#0f172a", // Perfect for Card Backgrounds (Alt)
+    900: "#020617", // Perfect for Main Background (Default)
+    1000: "#000000",
   },
- primary: {
-      100: "#ffe6e6", // Lightest (background highlights)
-      200: "#ffbaba", 
-      300: "#f88989", // Tera soft coral shade
-      400: "#da2d2d", 
-      600: "#8987e4", // Tera main brand color!
-      500: "#355a86", // Hover states ke liye
-      700: "#b34040", 
-      800: "#802d2d", 
-      900: "#4d1b1b", // Darkest
-    },
+  primary: {
+    // Deep Indigo (Professional, Trustworthy, Vibrant)
+    100: "#e0e7ff",
+    200: "#c7d2fe",
+    300: "#a5b4fc",
+    400: "#818cf8",
+    500: "#6366f1", // Main Brand Color
+    600: "#4f46e5", // Hover State
+    700: "#4338ca",
+    800: "#3730a3",
+    900: "#312e81",
+  },
   secondary: {
-    // yellow
-    50: "#f0f0f0", // manually adjusted
-    100: "#fff6e0",
-    200: "#ffedc2",
-    300: "#ffe3a3",
-    400: "#ffda85",
-    500: "#ffd166",
-    600: "#cca752",
-    700: "#997d3d",
-    800: "#665429",
-    900: "#332a14",
+    // Vibrant Teal (For accents, charts, success metrics)
+    50: "#f0fdfa",
+    100: "#ccfbf1",
+    200: "#99f6e4",
+    300: "#5eead4",
+    400: "#2dd4bf", // Bright accent for Dark Mode
+    500: "#14b8a6", // Main accent for Light Mode
+    600: "#0d9488",
+    700: "#0f766e",
+    800: "#115e59",
+    900: "#134e4a",
   },
 };
 
-// function that reverses the color palette
+// Function that reverses the color palette for Light Mode
 function reverseTokens(tokensDark) {
   const reversedTokens = {};
   Object.entries(tokensDark).forEach(([key, val]) => {
@@ -58,51 +59,53 @@ function reverseTokens(tokensDark) {
 }
 export const tokensLight = reverseTokens(tokensDark);
 
-// mui theme settings
+// MUI Theme Settings
 export const themeSettings = (mode) => {
   return {
     palette: {
       mode: mode,
       ...(mode === "dark"
         ? {
-            // palette values for dark mode
+            // 🌙 PALETTE VALUES FOR DARK MODE
             primary: {
               ...tokensDark.primary,
-              main: tokensDark.primary[400],
+              main: tokensDark.primary[500],
               light: tokensDark.primary[400],
+              dark: tokensDark.primary[600],
             },
             secondary: {
               ...tokensDark.secondary,
-              main: tokensDark.secondary[300],
+              main: tokensDark.secondary[400], // Brighter teal for dark mode
+              light: tokensDark.secondary[300],
             },
             neutral: {
               ...tokensDark.grey,
-              main: tokensDark.grey[500],
+              main: tokensDark.grey[400],
             },
             background: {
-              default: tokensDark.primary[600],
-              alt: tokensDark.primary[500],
+              default: tokensDark.grey[900], // 🚨 FIXED: Now it's deep slate, not purple!
+              alt: tokensDark.grey[800],     // 🚨 FIXED: Cards will have a nice distinct slate tone
             },
           }
         : {
-            // palette values for light mode
+            // ☀️ PALETTE VALUES FOR LIGHT MODE
             primary: {
               ...tokensLight.primary,
-              main: tokensDark.grey[50],
-              light: tokensDark.grey[100],
+              main: tokensDark.primary[600], // Deep Indigo for contrast in light mode
+              light: tokensDark.primary[500],
             },
             secondary: {
               ...tokensLight.secondary,
-              main: tokensDark.secondary[600],
-              light: tokensDark.secondary[700],
+              main: tokensDark.secondary[600], // Deeper teal for readability
+              light: tokensDark.secondary[500],
             },
             neutral: {
               ...tokensLight.grey,
               main: tokensDark.grey[500],
             },
             background: {
-              default: tokensDark.grey[0],
-              alt: tokensDark.grey[50],
+              default: tokensDark.grey[10],  // 🚨 FIXED: Very light grey background
+              alt: tokensDark.grey[0],       // 🚨 FIXED: Pure white cards
             },
           }),
     },
@@ -112,26 +115,32 @@ export const themeSettings = (mode) => {
       h1: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 40,
+        fontWeight: 700, // Added font weights for better hierarchy
       },
       h2: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 32,
+        fontWeight: 600,
       },
       h3: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 24,
+        fontWeight: 600,
       },
       h4: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 20,
+        fontWeight: 600,
       },
       h5: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 16,
+        fontWeight: 500,
       },
       h6: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         fontSize: 14,
+        fontWeight: 500,
       },
     },
   };
