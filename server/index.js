@@ -62,15 +62,24 @@ app.use("/sales", salesRoutes);
 
 // Mongoose Setup
 const MONGO_URL = process.env.MONGO_URL;
-mongoose.connect("MONGO_URL")
-  .then(() => {
-    app.listen(PORT, () => console.log(`🚀 Server Port: ${PORT}`));
+if (!MONGO_URL) {
+    console.error("ERROR: MONGO_URL is missing in Environment Variables!");
+}
 
-    /* FORCE INJECTION - SIRF PRODUCTS */
-    console.log("Attempting to seed products...");
-    Product.insertMany(dataProduct)
-      .then(() => console.log("✅ 13 Products Seeded Successfully!"))
-      .catch((err) => console.log("❌ Seed Error:", err.message));
+mongoose.connect(MONGO_URL)
+    .then(() => {
+        app.listen(PORT, () => console.log(`Server running on Port: ${PORT}`));
+    })
+    .catch((error) => console.log(`${error} did not connect`));
+// mongoose.connect("MONGO_URL")
+//   .then(() => {
+//     app.listen(PORT, () => console.log(`🚀 Server Port: ${PORT}`));
+
+//     /* FORCE INJECTION - SIRF PRODUCTS */
+//     console.log("Attempting to seed products...");
+//     Product.insertMany(dataProduct)
+//       .then(() => console.log("✅ 13 Products Seeded Successfully!"))
+//       .catch((err) => console.log("❌ Seed Error:", err.message));
 
     /* ONLY RUN THIS ONCE TO FILL DATABASE */
     // User.insertMany(dataUser);
@@ -101,6 +110,6 @@ mongoose.connect("MONGO_URL")
     //   console.log("✅ 100 Aggregation-ready Transactions inserted!");
     // };
     // generateTransactions();
-    console.log("🚀 RestroPulse DB Connected!");
-  })
-  .catch((error) => console.log(`${error} did not connect`));
+  //   console.log("🚀 RestroPulse DB Connected!");
+  // })
+  // .catch((error) => console.log(`${error} did not connect`));
