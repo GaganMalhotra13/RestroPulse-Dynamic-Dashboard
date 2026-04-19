@@ -42,8 +42,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const handleLogout = async () => {
     try {
       // 1. Backend API call to clear the HTTP-Only Cookie
-      await fetch("http://localhost:5001/auth/logout", {
-        method: "POST",
+await fetch("https://restropulse-backend.onrender.com/auth/logout", {
+          method: "POST",
         credentials: "include" // 🚨 SUPER IMPORTANT: Iske bina cookie delete nahi hogi!
       });
 

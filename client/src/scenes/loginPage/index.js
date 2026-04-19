@@ -24,8 +24,9 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = isLogin ? "http://localhost:5001/auth/login" : "http://localhost:5001/auth/register";
-    
+const url = isLogin 
+  ? "https://restropulse-backend.onrender.com/auth/login" 
+  : "https://restropulse-backend.onrender.com/auth/register";    
     try {
       // API Call
       const response = await fetch(url, {

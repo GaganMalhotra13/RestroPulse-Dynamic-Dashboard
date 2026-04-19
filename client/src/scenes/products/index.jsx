@@ -116,8 +116,7 @@ const MenuItemss = () => {
 
   const handleAddProduct = async () => {
     try {
-      const response = await fetch("http://localhost:5001/client/products", {
-        method: "POST",
+const response = await fetch("https://restropulse-backend.onrender.com/client/products", {        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newItem),
       });
