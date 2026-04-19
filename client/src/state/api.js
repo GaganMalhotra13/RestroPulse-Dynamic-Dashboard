@@ -3,8 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Backend Api
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-baseUrl: "http://localhost:5001" // 👈 Isko on kar    // baseUrl:
-    //   process.env.REACT_APP_BASE_URL ||
+baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_APP_BASE_URL ||
     //   "http://localhost:5001",
   }), // base url
   reducerPath: "adminApi",
