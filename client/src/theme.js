@@ -1,44 +1,31 @@
-// Color Design Tokens - Modern SaaS Theme (Slate, Indigo, Teal)
+// Color Design Tokens - Koki Inspired (Raspberry, Charcoal, Slate)
 export const tokensDark = {
   grey: {
     0: "#ffffff",
-    10: "#f8fafc", 
-    50: "#f1f5f9", 
+    10: "#f8fafc",
+    50: "#f1f5f9",
     100: "#e2e8f0",
     200: "#cbd5e1",
     300: "#94a3b8",
-    400: "#64748b",
-    500: "#475569", // True mid-grey
+    400: "#64748b", // 👈 Dashboard ab ise padh payega
+    500: "#475569",
     600: "#334155",
     700: "#1e293b",
-    800: "#0f172a", // Perfect for Card Backgrounds (Alt)
-    900: "#020617", // Perfect for Main Background (Default)
+    800: "#0f172a", // Card Background
+    900: "#020617", // Main Background
     1000: "#000000",
   },
   primary: {
-    // Deep Indigo (Professional, Trustworthy, Vibrant)
-    100: "#e0e7ff",
-    200: "#c7d2fe",
-    300: "#a5b4fc",
-    400: "#818cf8",
-    500: "#6366f1", // Main Brand Color
-    600: "#4f46e5", // Hover State
-    700: "#4338ca",
-    800: "#3730a3",
-    900: "#312e81",
-  },
-  secondary: {
-    // Vibrant Teal (For accents, charts, success metrics)
-    50: "#f0fdfa",
-    100: "#ccfbf1",
-    200: "#99f6e4",
-    300: "#5eead4",
-    400: "#2dd4bf", // Bright accent for Dark Mode
-    500: "#14b8a6", // Main accent for Light Mode
-    600: "#0d9488",
-    700: "#0f766e",
-    800: "#115e59",
-    900: "#134e4a",
+    // Raspberry Pink (Koki Vibe)
+    100: "#fce7f3",
+    200: "#fbcfe8",
+    300: "#f9a8d4",
+    400: "#f472b6",
+    500: "#D13B62", // Main Koki Pink
+    600: "#db2777",
+    700: "#be185d",
+    800: "#9d174d",
+    900: "#831843",
   },
 };
 
@@ -61,87 +48,64 @@ export const tokensLight = reverseTokens(tokensDark);
 
 // MUI Theme Settings
 export const themeSettings = (mode) => {
+  const t = mode === "dark" ? tokensDark : tokensLight;
+  
   return {
     palette: {
       mode: mode,
       ...(mode === "dark"
         ? {
-            // 🌙 PALETTE VALUES FOR DARK MODE
+            // Dark Mode
             primary: {
-              ...tokensDark.primary,
-              main: tokensDark.primary[500],
-              light: tokensDark.primary[400],
-              dark: tokensDark.primary[600],
+              ...t.primary,
+              main: t.primary[500],
             },
             secondary: {
-              ...tokensDark.secondary,
-              main: tokensDark.secondary[400], // Brighter teal for dark mode
-              light: tokensDark.secondary[300],
+              main: "#D13B62", // Accent Pink
             },
             neutral: {
-              ...tokensDark.grey,
-              main: tokensDark.grey[400],
+              ...t.grey,
+              main: t.grey[500],
             },
             background: {
-              default: tokensDark.grey[900], // 🚨 FIXED: Now it's deep slate, not purple!
-              alt: tokensDark.grey[800],     // 🚨 FIXED: Cards will have a nice distinct slate tone
+              default: t.grey[900],
+              alt: t.grey[800],
             },
           }
         : {
-            // ☀️ PALETTE VALUES FOR LIGHT MODE
+            // Light Mode (Exact Koki Look)
             primary: {
-              ...tokensLight.primary,
-              main: tokensDark.primary[600], // Deep Indigo for contrast in light mode
-              light: tokensDark.primary[500],
+              ...t.primary,
+              main: "#D13B62", 
             },
             secondary: {
-              ...tokensLight.secondary,
-              main: tokensDark.secondary[600], // Deeper teal for readability
-              light: tokensDark.secondary[500],
+              main: "#2D3748", // Charcoal
             },
             neutral: {
-              ...tokensLight.grey,
-              main: tokensDark.grey[500],
+              ...t.grey,
+              main: t.grey[500],
             },
             background: {
-              default: tokensDark.grey[10],  // 🚨 FIXED: Very light grey background
-              alt: tokensDark.grey[0],       // 🚨 FIXED: Pure white cards
+              default: "#F7F8FC", 
+              alt: "#FFFFFF", 
+            },
+            text: {
+              primary: "#2D3748",
+              secondary: "#718096",
             },
           }),
     },
     typography: {
-      fontFamily: ["Inter", "sans-serif"].join(","),
-      fontSize: 12,
-      h1: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 40,
-        fontWeight: 700, // Added font weights for better hierarchy
-      },
-      h2: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 32,
-        fontWeight: 600,
-      },
-      h3: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 24,
-        fontWeight: 600,
-      },
-      h4: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 20,
-        fontWeight: 600,
-      },
-      h5: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 16,
-        fontWeight: 500,
-      },
-      h6: {
-        fontFamily: ["Inter", "sans-serif"].join(","),
-        fontSize: 14,
-        fontWeight: 500,
-      },
+      fontFamily: ["'Poppins'", "sans-serif"].join(","),
+      h1: { fontWeight: 800, fontSize: "2.5rem" },
+      h2: { fontWeight: 700, fontSize: "2rem" },
+      h3: { fontWeight: 700, fontSize: "1.5rem" },
+      h4: { fontWeight: 600, fontSize: "1.2rem" },
+      h5: { fontWeight: 600, fontSize: "1rem" },
+      h6: { fontWeight: 400, fontSize: "0.8rem" },
+    },
+    shape: {
+      borderRadius: 16,
     },
   };
 };

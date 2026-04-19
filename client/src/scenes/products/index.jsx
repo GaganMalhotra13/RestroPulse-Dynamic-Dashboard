@@ -17,7 +17,7 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
-import { useGetProductsQuery } from "state/api";
+import { useGetProductsQuery, useAddProductMutation } from "state/api";
 import Header from "components/Header";
 
 // Individual Product Card Component
@@ -103,6 +103,7 @@ const MenuItems = ({
 const MenuItemss = () => {
   const theme = useTheme(); // Fixed: theme was missing here
   const { data, isLoading } = useGetProductsQuery();
+  const [addProduct] = useAddProductMutation(); // 👈 NAYA HOOK ADD KIYA
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   
   const [open, setOpen] = useState(false);
@@ -116,17 +117,18 @@ const MenuItemss = () => {
 
   const handleAddProduct = async () => {
     try {
-const response = await fetch("https://restropulse-backend.onrender.com/client/products", {        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newItem),
-      });
-
-      if (response.ok) {
-        setOpen(false);
-        window.location.reload(); 
-      }
+      // 👈 Raw fetch hata diya! Ab RTK Query sambhalega sab kuch (Local aur Live dono)
+      await addProduct(newItem).unwrap(); 
+      
+      setOpen(false);
+      setNewItem({ name: "", price: "", description: "", category: "", supply: "" }); // Form clear karna zaroori hai
+      
+      // 🚨 window.location.reload(); HATA DIYA! 
+      // Kyunki RTK Query 'invalidatesTags' se list automatically refresh kar dega bina page reload kiye!
+      
     } catch (error) {
       console.error("Failed to add product:", error);
+      alert("Failed to add product. Check console for details.");
     }
   };
 

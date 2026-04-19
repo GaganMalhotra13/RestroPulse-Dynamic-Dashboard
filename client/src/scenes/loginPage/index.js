@@ -52,7 +52,7 @@ const url = isLogin
       }
     } catch (error) {
       console.error("Auth Error:", error);
-      alert("Network error. Backend check karo!");
+      alert("Network error!");
     }
   };
 

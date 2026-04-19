@@ -3,8 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Backend Api
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://restropulse-backend.onrender.com",
-    // baseUrl:
+baseUrl: "http://localhost:5001" // 👈 Isko on kar    // baseUrl:
     //   process.env.REACT_APP_BASE_URL ||
     //   "http://localhost:5001",
   }), // base url
@@ -12,7 +11,7 @@ export const api = createApi({
   // tags
   tagTypes: [
     "User",
-    "Producs",
+    "Products",
     "Customers",
     "Transactions",
     "Geography",
@@ -71,6 +70,22 @@ export const api = createApi({
       query: () => "analytics/peak-hours",
       providesTags: ["Analytics"],
     }),
+    addProduct: build.mutation({
+      query: (newProductData) => ({
+        url: "client/products",
+        method: "POST",
+        body: newProductData,
+      }),
+      // Isse add hote hi list apne aap refresh ho jayegi
+      invalidatesTags: ["Products"], 
+    }),addProduct: build.mutation({
+      query: (newProduct) => ({
+        url: "client/products",
+        method: "POST",
+        body: newProduct,
+      }),
+      invalidatesTags: ["Products"], // Isse add hote hi list update ho jayegi
+    }),
     addTransaction: build.mutation({
       query: (newOrderData) => ({
         url: "sales/new-order",
@@ -92,6 +107,8 @@ export const {
   useGetSalesQuery,
   useGetAdminsQuery,
   useGetUserPerformanceQuery,
-  useGetDashboardQuery,useGetDailyRevenueQuery, 
+  useGetDashboardQuery,
+  useGetDailyRevenueQuery, 
+  useAddProductMutation,
   useGetPeakHoursQuery,useAddTransactionMutation,
 } = api;

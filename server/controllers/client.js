@@ -94,7 +94,27 @@ export const getTransactions = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+// Add Product (Ye missing tha tere code mein!)
+export const addProduct = async (req, res) => {
+  try {
+    const { name, price, description, category, supply } = req.body;
+    
+    const newProduct = new Product({
+      name,
+      price,
+      description,
+      category,
+      supply,
+    });
 
+    await newProduct.save();
+    
+    // Naya product save hone ke baad UI ko response bhejo
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
 // Get Geography
 export const getGeography = async (req, res) => {
   try {
