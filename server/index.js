@@ -33,7 +33,10 @@ app.use(cookieParser());
 
 // CORS FIX: Render deploy ke liye origin baad mein badal sakte ho
 app.use(cors({
-  origin: ["http://localhost:3000", "https://restropulse-dashboard.onrender.com"], // Frontend URL yahan aayegi
+  origin: [
+    "http://localhost:3000", 
+    "https://restro-pulse-dynamic-dashboard.vercel.app"
+  ], 
   credentials: true, 
 }));
 
