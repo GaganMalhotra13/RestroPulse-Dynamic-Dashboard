@@ -76,10 +76,10 @@ const Customers = () => {
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.background.alt,
           },
           "& .MuiDataGrid-footerContainer": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.background.alt,
             color: theme.palette.secondary[100],
             borderTop: "none",
           },

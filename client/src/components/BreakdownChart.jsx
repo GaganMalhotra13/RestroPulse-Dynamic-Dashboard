@@ -25,10 +25,11 @@ const BreakdownChart = ({ isDashboard = false }) => {
 
   // 🛠️ FIX 1: Unique colors for all 4 categories
   const colors = [
-    theme.palette.secondary[500],
-    theme.palette.secondary[300],
-    theme.palette.primary[300], // Changed
-    theme.palette.secondary[700], // Changed
+    "#64B5F6", // Light Blue
+  "#4ADE80", // Light Green
+  "#F87171", // Soft Red
+  "#A78BFA", // Soft Purple
+  "#FB923C", // Soft Orange
   ];
 
   // formatted data

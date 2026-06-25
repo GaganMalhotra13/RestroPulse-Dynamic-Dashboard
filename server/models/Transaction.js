@@ -12,7 +12,7 @@ const TransactionSchema = new mongoose.Schema(
     },
     products: [
       {
-        type: mongoose.Schema.Types.ObjectId, // 🚨 Ab ye accurately Item IDs ko handle karega
+        type: mongoose.Schema.Types.ObjectId, 
         ref: "Product",
       }
     ],
@@ -21,7 +21,7 @@ const TransactionSchema = new mongoose.Schema(
       default: "cash"
     },orderType: { type: String, default: "Dine-In" },
     staffName: { type: String },
-    staffRole: { type: String }
+    staffRole: { type: String },status: { type: String, default: "Pending" },
   },
   { timestamps: true }
 );

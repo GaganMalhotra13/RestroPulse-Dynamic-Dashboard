@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Backend Api
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_APP_BASE_URL ||
-    //   "http://localhost:5001",
+     //baseUrl:   "http://localhost:5001",
+    baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_APP_BASE_URL ||
   }), // base url
   reducerPath: "adminApi",
   // tags
@@ -34,13 +34,32 @@ baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_A
       query: () => "client/customers",
       providesTags: ["Customers"],
     }),
+    // 1. GET ROUTE: Ise batana hai ki ye data "Transactions" tag ka hai
     getTransactions: build.query({
       query: ({ page, pageSize, sort, search }) => ({
         url: "client/transactions",
         method: "GET",
         params: { page, pageSize, sort, search },
       }),
-      providesTags: ["Transactions"],
+      providesTags: ["Transactions"], // 👈 YE ZAROORI HAI
+    }),
+
+    // 2. POST ROUTE: Ise batana hai ki order punch hone pe purane tags ko "stale" (purana) ghoshit kar de
+    addTransaction: build.mutation({
+      query: (body) => ({
+        url: "client/transactions", // Tera API route
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Transactions", "Dashboard", "Performance"], // 👈 JAISE HI ORDER PUNCH HOGA, YE TEENO PAGE REFRESH HONGE
+    }),
+    updateTransactionStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `client/transactions/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Transactions"], // Refreshes the grid when status is changed
     }),
     getGeography: build.query({
       query: () => "client/geography",
@@ -61,7 +80,8 @@ baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_A
     getDashboard: build.query({
       query: () => "general/dashboard",
       providesTags: ["Dashboard"],
-    }),getDailyRevenue: build.query({
+    }),
+    getDailyRevenue: build.query({
       query: () => "analytics/daily-revenue",
       providesTags: ["Analytics"],
     }),
@@ -77,22 +97,8 @@ baseUrl: "https://restropulse-backend.onrender.com",    //   process.env.REACT_A
       }),
       // Isse add hote hi list apne aap refresh ho jayegi
       invalidatesTags: ["Products"], 
-    }),addProduct: build.mutation({
-      query: (newProduct) => ({
-        url: "client/products",
-        method: "POST",
-        body: newProduct,
-      }),
-      invalidatesTags: ["Products"], // Isse add hote hi list update ho jayegi
     }),
-    addTransaction: build.mutation({
-      query: (newOrderData) => ({
-        url: "sales/new-order",
-        method: "POST",
-        body: newOrderData,
-      }),
-      invalidatesTags: ["Dashboard", "Transactions", "Sales"], 
-    }),
+   
   }),
 });
 
@@ -109,5 +115,5 @@ export const {
   useGetDashboardQuery,
   useGetDailyRevenueQuery, 
   useAddProductMutation,
-  useGetPeakHoursQuery,useAddTransactionMutation,
+  useGetPeakHoursQuery,useAddTransactionMutation, useUpdateTransactionStatusMutation
 } = api;

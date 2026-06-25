@@ -33,7 +33,14 @@ const Admin = () => {
       headerName: "Phone Number",
       flex: 0.5,
       renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"); // format phone number (123) 456-7890
+        // 🚨 THE FIX: Agar phone number nahi hai, toh crash mat ho, 'N/A' dikha do
+        if (!params.value) return "N/A"; 
+        
+        // Agar number hai, tabhi usko replace/format karo
+        return params.value.replace(
+          /^(\d{3})(\d{3})(\d{4})/,
+          "($1)$2-$3"
+        );
       },
     },
     {
@@ -75,7 +82,7 @@ const Admin = () => {
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.background.alt,
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.primary.light,

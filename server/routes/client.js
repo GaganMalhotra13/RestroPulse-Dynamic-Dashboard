@@ -5,15 +5,23 @@ import {
   getCustomers,
   addProduct,
   getTransactions,
-  getGeography,getUser,
+  addTransaction, updateTransactionStatus,
+  getGeography,
+  getUser,
 } from "../controllers/client.js";
 
 const router = express.Router();
 
 // Routes
 router.get("/products", getProducts);
+router.post("/products", addProduct);
 router.get("/customers", getCustomers);
-router.post("/products", addProduct); // 👈 YE LINE HONI CHAHIYE!router.get("/transactions", getTransactions);
+
+router.get("/transactions", getTransactions);
+router.post("/transactions", addTransaction); 
+router.patch("/transactions/:id/status", updateTransactionStatus)
+
 router.get("/geography", getGeography);
 router.get("/user/:id", getUser);
+
 export default router;
